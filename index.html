@@ -158,6 +158,18 @@ footer .brand{display:block;margin-bottom:6px}
   .jinan-result-card{text-align:center}.jinan-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}.jinan-result-item{padding:12px;border-radius:14px;background:rgba(215,182,106,.09)}.jinan-result-item strong{display:block;font-size:1.35rem}
   .jinan-badge-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}.jinan-badge{padding:8px 11px;border-radius:999px;background:rgba(215,182,106,.15)}
   @media(max-width:600px){.jinan-game-top{justify-content:center}.jinan-question-text{font-size:1.05rem}.jinan-game-answers{grid-template-columns:1fr}}
+
+  /* إضافات الألعاب الدينية الجديدة — معزولة عن الألعاب القائمة */
+  .jinan-ethics-panel{margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(23,75,59,.92),rgba(10,42,33,.96));animation:rise .35s ease both}
+  .jinan-ethics-panel[hidden]{display:none!important}.jinan-ethics-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:16px 0}
+  .jinan-ethics-options .btn{height:auto;min-height:54px;padding:12px 16px;border-radius:14px;white-space:normal;text-align:right;justify-content:flex-start}
+  .jinan-ethics-options .btn.correct{border-color:#7dc89a;background:rgba(47,143,91,.18)}.jinan-ethics-options .btn.wrong{border-color:#e58b82;background:rgba(201,76,76,.16)}
+  .jinan-ethics-feedback{padding:14px;border-radius:14px;background:rgba(215,182,106,.09);border:1px solid var(--line);margin:12px 0}
+  .jinan-ethics-feedback a{color:var(--gold-soft);text-underline-offset:3px}.jinan-ethics-levels{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.jinan-ethics-levels .btn[aria-pressed=true]{background:var(--gold);color:var(--deep)}
+  .jinan-ethics-checklist{display:grid;gap:10px;margin:16px 0}.jinan-ethics-check{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(0,0,0,.12)}.jinan-ethics-check input{margin-top:9px;accent-color:var(--gold);width:18px;height:18px;flex:0 0 auto}
+  .jinan-ethics-top{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;color:var(--gold-soft)}
+  @media(max-width:600px){.jinan-ethics-panel{padding:15px}.jinan-ethics-options{grid-template-columns:1fr}.jinan-ethics-options .btn{width:100%}}
+
 </style>
 </head>
 <body>
@@ -398,13 +410,29 @@ footer .brand{display:block;margin-bottom:6px}
     <div class="wrap">
       <div class="head">
         <h2>الألعاب</h2>
-        <p>أربع ألعاب قصيرة، لكل لعبة تحدٍ قرآني واضح.</p>
+        <p>ألعاب قرآنية وتفاعلية تساعدك على التعلّم والتفكير.</p>
       </div>
       <div class="games">
         <article class="card"><h3>أكمل الآية</h3><p>اختر التكملة الصحيحة للآية.</p><button class="btn primary jump-stage" data-stage="1" type="button">العب الآن</button></article>
         <article class="card jinan-new-game-card"><h3>من أي سورة؟ 🕌</h3><p>اعرف السورة التي وردت فيها الآية من نطاقك المختار.</p><button class="btn primary new-game-launch" data-new-game="surah" type="button">العب الآن</button></article>
         <article class="card jinan-new-game-card"><h3>الآية التالية ➡️</h3><p>اختر الآية التي تأتي مباشرة بعد الآية المعروضة.</p><button class="btn primary new-game-launch" data-new-game="next" type="button">العب الآن</button></article>
         <article class="card jinan-new-game-card"><h3>الكلمة الناقصة 📖</h3><p>أكمل الآية باختيار الكلمة الصحيحة.</p><button class="btn primary new-game-launch" data-new-game="missing" type="button">العب الآن</button></article>
+        <article class="card jinan-new-game-card"><h3>البوصلة 🧭</h3><p>فكّر في مواقف الحياة اليومية واختر التصرف الأقرب للهدي الإسلامي.</p><button class="btn primary jinan-ethics-launch" data-ethics-game="compass" type="button">العب الآن</button></article>
+        <article class="card jinan-new-game-card"><h3>الموقف 🎭</h3><p>ادخل مواقف تفاعلية واتخذ قراراتك، وشاهد كيف تتغير الأحداث.</p><button class="btn primary jinan-ethics-launch" data-ethics-game="scenario" type="button">العب الآن</button></article>
+        <article class="card jinan-new-game-card"><h3>اكتشف الخطأ 🔍</h3><p>اكتشف التصرفات الخاطئة في مواقف واقعية عبر ثلاثة مستويات.</p><button class="btn primary jinan-ethics-launch" data-ethics-game="errors" type="button">العب الآن</button></article>
+      </div>
+      <div class="jinan-ethics-panel" id="jinanEthicsPanel" hidden aria-live="polite">
+        <div class="jinan-ethics-top"><h3 id="jinanEthicsTitle">البوصلة 🧭</h3><span id="jinanEthicsMeta"></span></div>
+        <p id="jinanEthicsStory" class="jinan-question-text"></p>
+        <div id="jinanEthicsOptions" class="jinan-ethics-options"></div>
+        <div id="jinanEthicsFeedback" class="jinan-ethics-feedback" hidden></div>
+        <div class="jinan-ethics-levels" id="jinanEthicsLevels" hidden>
+          <button class="btn" type="button" data-ethics-level="easy" aria-pressed="true">سهل</button>
+          <button class="btn" type="button" data-ethics-level="medium" aria-pressed="false">متوسط</button>
+          <button class="btn" type="button" data-ethics-level="advanced" aria-pressed="false">متقدم</button>
+        </div>
+        <div id="jinanEthicsChecklist" class="jinan-ethics-checklist" hidden></div>
+        <div class="jinan-setup-actions"><button class="btn primary" type="button" id="jinanEthicsContinue" hidden>متابعة</button><button class="btn" type="button" id="jinanEthicsRestart">إعادة اللعب</button><button class="btn" type="button" id="jinanEthicsClose">العودة للألعاب</button></div>
       </div>
     </div>
   </section>
@@ -713,7 +741,7 @@ footer .brand{display:block;margin-bottom:6px}
   ];
   let newGameType = "surah", newGameScope = "juz-single", newGameSelection = {juz:1}, newGameQuestionCount = 5;
   let newGameQuestions = [], newGameIndex = 0, newGameScore = 0, newGameCorrect = 0, newGameWrong = 0, newGameCombo = 0, newGameBestCombo = 0, newGameAnswered = false, newGameDifficultyKey = "beginner";
-  let newGameProgress = { points:0, xp:0, exams:0, bestCombo:0, gamesPlayed:{surah:0,next:0,missing:0}, badges:[], discovered:false };
+  let newGameProgress = { points:0, xp:0, exams:0, bestCombo:0, gamesPlayed:{surah:0,next:0,missing:0}, religiousGamesPlayed:{compass:0,scenario:0,errors:0}, badges:[], discovered:false };
   const newGameDataRef = () => currentUser ? doc(db,"users",currentUser.uid,"gameProgress","main") : null;
   const ng = id => document.getElementById(id);
   const bindClick = (id, handler) => { const el = ng(id); if (el) el.addEventListener("click", handler); else console.warn("JINAN: missing control", id); };
@@ -751,7 +779,7 @@ footer .brand{display:block;margin-bottom:6px}
     return "النطاق المحدد";
   }
   function makeSelect(label, options, value, onChange){const sel=document.createElement("select");options.forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;sel.appendChild(o)});sel.value=String(value);sel.onchange=()=>{onChange(Number(sel.value));updateNewGameSetup()};const l=document.createElement("label"),sp=document.createElement("span");sp.className="note";sp.textContent=label;l.append(sp,sel);return l;}
-  function makeMultiChecks(label, options, values, onChange){const wrap=document.createElement("div"), title=document.createElement("div");title.className="note";title.textContent=label;wrap.appendChild(title);const grid=document.createElement("div");grid.className="jinan-multi-grid";options.forEach(([v,t])=>{const l=document.createElement("label"),cb=document.createElement("input");cb.type="checkbox";cb.value=v;cb.checked=values.includes(Number(v));cb.onchange=()=>{onChange([...grid.querySelectorAll('input:checked')].map(x=>Number(x.value)));updateNewGameSetup()};l.append(cb,document.createTextNode(t));grid.appendChild(l)});wrap.appendChild(grid);return wrap;}
+  function makeMultiChecks(label, options, values, onChange){const wrap=document.createElement("div"), title=document.createElement("div");title.className="note";title.textContent=label;wrap.appendChild(title);const grid=document.createElement("div");grid.className="jinan-multi-grid";options.forEach(([v,t])=>{const l=document.createElement("label"),cb=document.createElement("input");cb.type="checkbox";cb.value=v;cb.checked=values.includes(Number(v));cb.onchange=()=>{onChange([...grid.querySelectorAll('input:checked')].map(x=>Number(x.value));updateNewGameSetup()};l.append(cb,document.createTextNode(t));grid.appendChild(l)});wrap.appendChild(grid);return wrap;}
   function populateNewGameControls(){
     const box=ng("newGameScopeControls");if(!box)return;box.replaceChildren();
     const juzOpts=Array.from({length:30},(_,i)=>[i+1,juzLabel(i+1)]), surahOpts=quranData.map(s=>[s.index,`${s.index}. ${s.name}`]);
@@ -833,7 +861,7 @@ footer .brand{display:block;margin-bottom:6px}
     const level=getGeneralLevel(newGameProgress.xp), badges=badgeNames();const nextText=level.next?`${level.progress}% إلى ${level.next?newGameLevelNames[level.index+1]:"المستوى التالي"}`:"أقصى مستوى";
     ng("newGameProgressBar").style.width="100%";ng("newGameResultBody").innerHTML=`<div class="jinan-result-grid"><div class="jinan-result-item"><strong>${newGameScore}</strong>النقاط</div><div class="jinan-result-item"><strong>${newGameCorrect}</strong>صحيحة</div><div class="jinan-result-item"><strong>${newGameWrong}</strong>خاطئة</div><div class="jinan-result-item"><strong>+${Math.max(10,newGameScore)+newGameCorrect*5}</strong>XP</div><div class="jinan-result-item"><strong>🔥 ×${newGameBestCombo}</strong>أفضل Combo</div><div class="jinan-result-item"><strong>${newGameEscape(level.name)}</strong>المستوى العام</div></div><p>${newGameEscape(nextText)}</p><div class="jinan-badge-list">${badges.map(b=>`<span class="jinan-badge">${newGameEscape(b)}</span>`).join("")||"<span class='note'>لا يوجد وسام جديد هذه المرة.</span>"}</div>`;ng("newGameSetup").hidden=true;ng("newGamePlay").hidden=true;ng("newGameResult").hidden=false;
   }
-  async function loadNewGameProgress(){if(!currentUser)return;try{const s=await getDoc(newGameDataRef());if(s.exists()){const d=s.data();newGameProgress={...newGameProgress,...d,gamesPlayed:{...newGameProgress.gamesPlayed,...(d.gamesPlayed||{})},badges:Array.isArray(d.badges)?d.badges:[]};}}catch(e){console.warn("New games progress load failed",e)}}
+  async function loadNewGameProgress(){if(!currentUser)return;try{const s=await getDoc(newGameDataRef());if(s.exists()){const d=s.data();newGameProgress={...newGameProgress,...d,gamesPlayed:{...newGameProgress.gamesPlayed,...(d.gamesPlayed||{})},religiousGamesPlayed:{...newGameProgress.religiousGamesPlayed,...(d.religiousGamesPlayed||{})},badges:Array.isArray(d.badges)?d.badges:[]};}}catch(e){console.warn("New games progress load failed",e)}}
   document.querySelectorAll(".new-game-launch").forEach(b=>b.addEventListener("click",()=>openNewGame(b.dataset.newGame)));
   document.querySelectorAll(".jinan-scope-btn").forEach(b=>b.addEventListener("click",()=>chooseScope(b.dataset.scope)));
   document.querySelectorAll(".jinan-count-btn").forEach(b=>b.addEventListener("click",()=>{newGameQuestionCount=Number(b.dataset.count);updateNewGameSetup()}));
@@ -859,8 +887,80 @@ footer .brand{display:block;margin-bottom:6px}
   setAuthGate(false);
   try { const app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); loadLeaderboard(); onAuthStateChanged(auth, async (user) => { if (!user) { showSignedOut(); await loadLeaderboard(); return; } try { await ensureStudentProfile(user); showSignedIn(user); await loadProgress(user); await loadNewGameProgress(); await loadAdminAccounts(); await loadLeaderboard(); } catch (error) { if (user.email === usernameAuthEmail("admin")) { studentProfile = { username: "admin", role: "admin" }; showSignedIn(user); try { await loadProgress(user); await loadNewGameProgress(); await loadAdminAccounts(); } catch (fallbackError) { setStatus("تم الدخول كأدمن، لكن يجب نشر قواعد Firestore لعرض الحسابات.", "error"); } } else setStatus(errorMessage(error), "error"); } }); }
   catch (error) { setStatus("تعذر تهيئة Firebase. راجع إعدادات المشروع واتصال الإنترنت.", "error"); console.error("JINAN Firebase initialization error:", error); }
+
+  /* ===== الألعاب الدينية الثلاث: بيانات مستقلة ومنطق نقاط متوافق (+10 / -5) ===== */
+  const ethicsSources = {
+    parents:{label:"سورة الإسراء، الآية 23",url:"https://quran.com/17/23"}, truth:{label:"سورة التوبة، الآية 119",url:"https://quran.com/9/119"}, trust:{label:"سورة النساء، الآية 58",url:"https://quran.com/4/58"},
+    speech:{label:"سورة الحجرات، الآية 12",url:"https://quran.com/49/12"}, greeting:{label:"سورة النساء، الآية 86",url:"https://quran.com/4/86"}, mosque:{label:"سورة النور، الآية 27",url:"https://quran.com/24/27"},
+    help:{label:"سورة المائدة، الآية 2",url:"https://quran.com/5/2"}, anger:{label:"سورة آل عمران، الآية 134",url:"https://quran.com/3/134"}, kindness:{label:"سورة فصلت، الآية 34",url:"https://quran.com/41/34"},
+    apology:{label:"سورة الشورى، الآية 40",url:"https://quran.com/42/40"}, fairness:{label:"سورة النحل، الآية 90",url:"https://quran.com/16/90"}, permission:{label:"سورة النور، الآية 27",url:"https://quran.com/24/27"}
+  };
+  const compassQuestions = [
+    {story:"طلبت منك أمك مساعدتها بينما كنت مشغولًا بلعبة. كيف تتصرف؟",options:["أتجاهلها حتى أنتهي","أردّ بأدب وأساعدها، أو أوضح بلطف متى أستطيع","أرفع صوتي لأنني مشغول"],correct:1,explain:"خاطب والديك بأدب وإحسان، وحاول تلبية حاجتهما دون جفاء.",source:"parents"},
+    {story:"وجدت محفظة في ساحة المدرسة ولا يعرف أحد أنك وجدتها.",options:["آخذ المال وأترك المحفظة","أخفيها حتى يسأل عنها صاحبها","أسلّمها للمسؤول ليعيدها لصاحبها"],correct:2,explain:"الأمانة أن تحفظ ما ليس لك وتعيده إلى صاحبه، لا أن تستفيد منه لنفسك.",source:"trust"},
+    {story:"سألك صديقك إن كنت قد كسرت شيئًا بالخطأ، وأنت فعلت ذلك فعلًا.",options:["أعترف بصدق وأحاول إصلاح ما حدث","أنكر حتى لا أتعرض للوم","ألوم شخصًا آخر"],correct:0,explain:"الصدق والتقوى يكونان في قول الحقيقة وتحمل المسؤولية.",source:"truth"},
+    {story:"بدأ زملاؤك يتحدثون بسوء عن طالب غائب.",options:["أضيف قصة محرجة عنه","أغيّر الموضوع أو أطلب التوقف بأدب","أسجل الحديث وأنشره"],correct:1,explain:"اجتنب الغيبة وسوء الظن، ولا تساعد على إيذاء سمعة الغائب.",source:"speech"},
+    {story:"دخلت مكانًا وحيّاك شخص بقول: السلام عليكم.",options:["أتجاهله","أردّ بتحية طيبة أو أحسن منها","أضحك ولا أجيبه"],correct:1,explain:"يرشد القرآن إلى رد التحية بمثلها أو بأحسن منها.",source:"greeting"},
+    {story:"رأيت زميلًا يحمل كتبًا كثيرة ويسقط بعضها، وأنت قادر على مساعدته.",options:["أساعده بما أستطيع","أضحك عليه","أصوّره دون إذنه"],correct:0,explain:"التعاون على الخير ومساعدة الناس من صور البر.",source:"help"},
+    {story:"غضب صديقك وقال كلامًا جارحًا، وأنت تشعر بالغضب أيضًا.",options:["أردّ بإهانة أشد","أهدأ وأختار كلامًا محترمًا، ثم أشرح ما أزعجني","أنشر خلافنا على الإنترنت"],correct:1,explain:"من الأخلاق المحمودة كظم الغيظ وضبط رد الفعل.",source:"anger"},
+    {story:"وصلت إلى باب بيت صديقك لزيارته.",options:["أدخل مباشرة لأنه صديقي","أطرق الباب وأستأذن قبل الدخول","أفتح النافذة وأنادي بصوت مزعج"],correct:1,explain:"من آداب الاستئذان ألا يدخل المرء بيت غيره قبل أن يستأذن.",source:"permission"}
+  ];
+  const scenarioCases = [
+    {story:"أنت في مجموعة الصف. نشر أحدهم خبرًا محرجًا عن زميل، ولا تعرف هل هو صحيح.",steps:[{story:"ما أول خطوة؟",options:["أعيد نشره بسرعة","لا أنشره، وأتحقق أو أتوقف عن تداوله","أضيف تفاصيل من عندي"],correct:1,explain:"لا تنشر ما قد يضر الناس دون تثبت، وتجنب الغيبة.",source:"speech"},{story:"قال لك ناشر الخبر: الجميع يرسله، لماذا توقفت؟",options:["أوضح بهدوء أنني لا أريد إيذاء أحد وأن الأفضل التحقق","أهاجمه أمام الجميع","أرسل الخبر إلى مجموعة أخرى"],correct:0,explain:"يمكن نصح الآخرين بالحكمة والرفق، دون إهانة أو نشر الضرر.",source:"kindness"}]},
+    {story:"في نشاط جماعي، لاحظت أن زميلك أخطأ أمام الجميع فبدأ بعضهم يضحك.",steps:[{story:"كيف تتصرف في اللحظة الأولى؟",options:["أشاركهم الضحك","أساعد على تهدئة الموقف ولا أحرجه، وأعرض المساعدة","أصرخ فيه ليصحح خطأه"],correct:1,explain:"الرفق والإصلاح أنفع من التشهير، ويمكن تصحيح الخطأ دون إذلال صاحبه.",source:"kindness"},{story:"بعد أن هدأ الموقف، ما الخطوة التالية؟",options:["أخبره على انفراد وبأسلوب لطيف بما يمكن تحسينه","أنشر صورته مع الخطأ","أكرر الخطأ أمام الآخرين"],correct:0,explain:"النصيحة الهادئة تحفظ الكرامة وتساعد على التعلم.",source:"fairness"}]},
+    {story:"استعرت قلمًا من صديق، ثم انكسر منك دون قصد قبل أن تعيده.",steps:[{story:"ماذا تقول لصديقك؟",options:["أعيده مكسورًا وأتظاهر أنني لم أفعل شيئًا","أخبره بصدق بما حدث وأعتذر","أقول إن شخصًا آخر كسره"],correct:1,explain:"الصدق والأمانة يقتضيان توضيح ما حدث وعدم إلقاء اللوم على غيرك.",source:"truth"},{story:"كيف تحاول إنهاء الموقف؟",options:["أرفض الكلام معه","أعرض إصلاحه أو تعويضه بالاتفاق معه","أخفي القلم"],correct:1,explain:"الإصلاح ورد الحقوق والتعامل بالعدل يساعدان على معالجة الخطأ.",source:"trust"}]},
+    {story:"رأيت شخصًا يواجه صعوبة في حمل أغراضه، لكنك متأخر عن موعدك.",steps:[{story:"ما التصرف المناسب؟",options:["أساعده بقدر ما أستطيع أو أطلب من شخص قريب مساعدته","أتجاهله تمامًا دون تفكير","ألومه لأنه يحمل أشياء كثيرة"],correct:0,explain:"التعاون على البر يكون بحسب الاستطاعة، ويمكن طلب المساعدة من غيرك.",source:"help"},{story:"تبيّن أن المساعدة ستؤخرك دقائق قليلة فقط.",options:["أساعده بأدب ثم أتابع طريقي","أطالبه بمكافأة قبل المساعدة","أوبخه على تأخيري"],correct:0,explain:"الإحسان إلى الناس عمل حسن، ويُراعى فيه حسن الخلق والقدرة.",source:"help"}]}
+  ];
+  const errorLevels = {
+    easy:[{story:"في زيارة لصديق، وقع هذا الموقف. حدّد التصرف غير الصحيح.",items:["استأذن قبل الدخول","دخل البيت دون استئذان","سلّم على أهل البيت"],errors:[1],explain:"الخطأ هو الدخول دون استئذان؛ من آداب زيارة البيوت الاستئذان.",source:"permission"},{story:"وجد طالب مالًا ليس له.",items:["سلّمه للمسؤول ليساعد في إعادته","أخفى المال لنفسه","حافظ على ما وجده"],errors:[1],explain:"الخطأ هو أخذ مال الغير لنفسه؛ الأمانة حفظ الحقوق.",source:"trust"}],
+    medium:[{story:"مجموعة تتحدث عن شخص غائب.",items:["نشروا كلامًا ساخرًا عنه","غيّر أحدهم الموضوع","امتنع طالب عن المشاركة في الغيبة","أضاف شخص إشاعة لم يتأكد منها"],errors:[0,3],explain:"السخرية والغيبة ونشر الأخبار غير المتحقق منها تصرفات مؤذية؛ الأفضل الكف عنها ونصح المجموعة برفق.",source:"speech"},{story:"أخطأ طالب في حل مسألة أمام الصف.",items:["صحح له المعلم بهدوء","سخر منه بعض الطلاب","ساعده زميله على فهم الخطأ","نشر طالب صورة الخطأ للسخرية منه"],errors:[1,3],explain:"السخرية والتشهير لا يساعدان على التعلم؛ التصحيح يكون باحترام.",source:"kindness"}],
+    advanced:[{story:"في مجموعة إلكترونية، وقع أكثر من تصرف خاطئ. اختر كل الأخطاء.",items:["نشر شخص خبرًا غير متأكد منه","طلب شخص التوقف عن تداول الإشاعة","شارك آخر صورة خاصة لإحراج صاحبها","تواصل طالب مع صاحب الشأن بنصيحة محترمة","سخر شخص من صاحب الصورة"],errors:[0,2,4],explain:"الأخطاء هي نشر خبر غير متثبت منه، وانتهاك الخصوصية للإحراج، والسخرية. توقف عن النشر وانصح باحترام أو أبلغ مسؤولًا موثوقًا إذا لزم.",source:"speech"},{story:"خلال عمل جماعي، ظهرت التصرفات التالية. حدّد جميع الأخطاء.",items:["أخذ عضو أدوات ليست له دون إذن","اعترف عضو بخطئه واقترح إصلاحه","اتهم عضو زميلًا دون دليل","رفض فريق مساعدة زميل قادر على المشاركة لمجرد السخرية منه","وزّع الفريق المهام بعدل"],errors:[0,2,3],explain:"أخذ ما ليس لك، واتهام الناس دون دليل، واستبعادهم للسخرية تصرفات خاطئة؛ المطلوب حفظ الحقوق والعدل والتعاون.",source:"trust"}]
+  };
+  const ethicsGameNames={compass:"البوصلة 🧭",scenario:"الموقف 🎭",errors:"اكتشف الخطأ 🔍"};
+  const ethicsState={type:null,level:"easy",index:0,step:0,score:0,correct:0,wrong:0,answered:false,activeItems:[]};
+  const ethicsEl=id=>document.getElementById(id);
+  function ethicsSourceHtml(key){const src=ethicsSources[key]||ethicsSources.kindness;return `المصدر: <a href="${src.url}" target="_blank" rel="noopener noreferrer">${src.label} — عرض الآية</a>`;}
+  function ethicsPanelOpen(type){ethicsState.type=type;ethicsState.level="easy";ethicsState.index=0;ethicsState.step=0;ethicsState.score=0;ethicsState.correct=0;ethicsState.wrong=0;ethicsState.answered=false;ethicsEl("jinanEthicsPanel").hidden=false;ethicsEl("jinanEthicsTitle").textContent=ethicsGameNames[type];ethicsEl("jinanEthicsLevels").hidden=type!=="errors";ethicsEl("jinanEthicsFeedback").hidden=true;ethicsEl("jinanEthicsChecklist").hidden=true;ethicsEl("jinanEthicsContinue").hidden=true;ethicsEl("jinanEthicsPanel").scrollIntoView({behavior:"smooth",block:"start"});ethicsRender();}
+  function ethicsCurrent(){if(ethicsState.type==="compass")return compassQuestions[ethicsState.index%compassQuestions.length];if(ethicsState.type==="scenario")return scenarioCases[ethicsState.index%scenarioCases.length].steps[ethicsState.step];return errorLevels[ethicsState.level][ethicsState.index%errorLevels[ethicsState.level].length];}
+  function ethicsRender(){const type=ethicsState.type;ethicsState.answered=false;ethicsEl("jinanEthicsFeedback").hidden=true;ethicsEl("jinanEthicsContinue").hidden=true;ethicsEl("jinanEthicsChecklist").hidden=true;ethicsEl("jinanEthicsOptions").hidden=false;const story=type==="scenario"?scenarioCases[ethicsState.index%scenarioCases.length].story+("\n\n"+ethicsCurrent().story):ethicsCurrent().story;ethicsEl("jinanEthicsStory").textContent=story;ethicsEl("jinanEthicsMeta").textContent=`الجولة ${ethicsState.index+1} · النقاط ${ethicsState.score}`;const box=ethicsEl("jinanEthicsOptions");box.replaceChildren();if(type==="errors"){const item=ethicsCurrent();ethicsEl("jinanEthicsChecklist").hidden=false;ethicsEl("jinanEthicsOptions").hidden=true;const list=ethicsEl("jinanEthicsChecklist");list.replaceChildren();item.items.forEach((txt,i)=>{const label=document.createElement("label");label.className="jinan-ethics-check";const cb=document.createElement("input");cb.type="checkbox";cb.value=String(i);const span=document.createElement("span");span.textContent=txt;label.append(cb,span);list.appendChild(label)});const check=document.createElement("button");check.type="button";check.className="btn primary";check.textContent="تحقق من الأخطاء المحددة";check.addEventListener("click",ethicsCheckErrors);list.appendChild(check);return;}ethicsCurrent().options.forEach((txt,i)=>{const b=document.createElement("button");b.type="button";b.className="btn";b.textContent=txt;b.addEventListener("click",()=>ethicsAnswer(i,b));box.appendChild(b)});}
+  function ethicsAnswer(choice,button){if(ethicsState.answered)return;ethicsState.answered=true;const item=ethicsCurrent(),ok=choice===item.correct;ethicsScore(ok);ethicsEl("jinanEthicsOptions").querySelectorAll("button").forEach((b,i)=>{b.disabled=true;if(i===item.correct)b.classList.add("correct");else if(i===choice)b.classList.add("wrong")});ethicsShowFeedback(ok,`التصرف الأنسب: ${item.options[item.correct]}. ${item.explain}`,item.source);}
+  function ethicsScore(ok){if(ok){ethicsState.correct++;ethicsState.score+=10}else{ethicsState.wrong++;ethicsState.score=Math.max(0,ethicsState.score-5)}ethicsEl("jinanEthicsMeta").textContent=`الجولة ${ethicsState.index+1} · النقاط ${ethicsState.score}`;}
+  function ethicsShowFeedback(ok,explain,source){const box=ethicsEl("jinanEthicsFeedback");box.hidden=false;box.innerHTML=`<strong>${ok?"إجابة صحيحة ✓ +10 نقاط":"ليست الإجابة الأنسب ✦ -5 نقاط"}</strong><p>${ethicsEscape(explain)}</p><p>${ethicsSourceHtml(source)}</p>`;ethicsEl("jinanEthicsContinue").hidden=false;}
+  function ethicsEscape(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
+  function ethicsCheckErrors(){if(ethicsState.answered)return;const item=ethicsCurrent(),selected=[...ethicsEl("jinanEthicsChecklist").querySelectorAll("input:checked")].map(x=>Number(x.value)),expected=item.errors;const ok=selected.length===expected.length&&selected.every(x=>expected.includes(x));ethicsState.answered=true;ethicsScore(ok);ethicsEl("jinanEthicsChecklist").querySelectorAll("input").forEach((x,i)=>{x.disabled=true;const label=x.closest("label");if(expected.includes(i))label.style.borderColor="#7dc89a";else if(x.checked)label.style.borderColor="#e58b82"});ethicsEl("jinanEthicsChecklist").querySelector("button").disabled=true;ethicsShowFeedback(ok,`${item.explain} ${ok?"حددت جميع الأخطاء بشكل صحيح.":"راجع التصرفات المظللة؛ يلزم تحديد جميع الأخطاء دون اختيار التصرفات الصحيحة."}`,item.source);}
+  async function ethicsFinish(){const key=ethicsState.type;if(!key)return;newGameProgress.points=(Number(newGameProgress.points)||0)+ethicsState.score;newGameProgress.xp=(Number(newGameProgress.xp)||0)+Math.max(10,ethicsState.score)+ethicsState.correct*5;newGameProgress.exams=(Number(newGameProgress.exams)||0)+1;newGameProgress.religiousGamesPlayed={compass:0,scenario:0,errors:0,...(newGameProgress.religiousGamesPlayed||{})};newGameProgress.religiousGamesPlayed[key]=(newGameProgress.religiousGamesPlayed[key]||0)+1;await saveNewGameProgress();const fb=ethicsEl("jinanEthicsFeedback");fb.hidden=false;fb.innerHTML=`<strong>أحسنت! انتهت الجولة 🎉</strong><p>نتيجتك: ${ethicsState.score} نقطة · ${ethicsState.correct} صحيحة · ${ethicsState.wrong} غير صحيحة.</p><p>تمت إضافة نقاط الجولة إلى تقدم ألعاب جِنان عند توفر اتصال الحساب.</p>`;ethicsEl("jinanEthicsContinue").hidden=true;ethicsEl("jinanEthicsMeta").textContent=`انتهت الجولة · ${ethicsState.score} نقطة`;}
+  function ethicsContinue(){if(!ethicsState.answered)return;const type=ethicsState.type;if(type==="scenario"){const current=scenarioCases[ethicsState.index%scenarioCases.length];if(ethicsState.step<current.steps.length-1){ethicsState.step++;ethicsRender();return;}ethicsState.step=0;}ethicsState.index++;const total=type==="compass"?compassQuestions.length:type==="scenario"?scenarioCases.length:errorLevels[ethicsState.level].length;if(ethicsState.index>=total){ethicsFinish();return;}ethicsRender();}
+  document.querySelectorAll(".jinan-ethics-launch").forEach(b=>b.addEventListener("click",()=>ethicsPanelOpen(b.dataset.ethicsGame)));
+  document.querySelectorAll("[data-ethics-level]").forEach(b=>b.addEventListener("click",()=>{ethicsState.level=b.dataset.ethicsLevel;document.querySelectorAll("[data-ethics-level]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));ethicsState.index=0;ethicsState.step=0;ethicsState.score=0;ethicsState.correct=0;ethicsState.wrong=0;ethicsRender();}));
+  bindClick("jinanEthicsContinue",ethicsContinue);bindClick("jinanEthicsRestart",()=>ethicsPanelOpen(ethicsState.type||"compass"));bindClick("jinanEthicsClose",()=>{ethicsEl("jinanEthicsPanel").hidden=true;switchAppTab("games");});
+  window.__jinanModuleReady = true;
+
 </script>
 
+
+
+<script>
+/* Fallback diagnostics/navigation: runs only if the Firebase module did not initialize. */
+(function(){
+  function status(message){
+    var el=document.getElementById("firebaseStatus")||document.getElementById("playerStatus");
+    if(el){el.textContent=message;el.dataset.kind="error";el.style.display="block";}
+  }
+  function fallbackTab(target){
+    if(window.__jinanModuleReady) return;
+    document.querySelectorAll("[data-app-tab]").forEach(function(panel){panel.classList.toggle("active",panel.dataset.appTab===target);});
+    document.querySelectorAll("[data-app-target]").forEach(function(button){button.classList.toggle("active",button.dataset.appTarget===target);});
+    var panel=document.querySelector('[data-app-tab="'+target+'"]');
+    if(panel) panel.scrollIntoView({behavior:"smooth",block:"start"});
+    status("لم يكتمل تشغيل JavaScript/Firebase؛ تأكد من اتصال الإنترنت وافتح الموقع عبر Firebase Hosting أو خادم HTTPS، ثم أعد تحميل الصفحة. لم يتم تغيير بيانات الحسابات.");
+  }
+  document.querySelectorAll("[data-app-target]").forEach(function(button){button.addEventListener("click",function(){fallbackTab(button.dataset.appTarget);});});
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener("click",function(){var map={"#top":"dashboard","#world":"dashboard","#account":"account","#quran":"quran","#leaderboard":"leaderboard","#games":"games","#daily":"daily","#achievements":"daily"};if(map[link.getAttribute("href")])fallbackTab(map[link.getAttribute("href")]);});});
+  window.addEventListener("error",function(e){if(!window.__jinanModuleReady && e && (e.message||e.target)) status("تعذر تحميل بعض ملفات التشغيل. تحقق من اتصال الإنترنت، واستخدم رابط الموقع المستضاف بدل فتح الملف مباشرة.");},true);
+  window.addEventListener("unhandledrejection",function(){if(!window.__jinanModuleReady)status("تعذر الاتصال بخدمات التشغيل. تحقق من الإنترنت ثم أعد تحميل الصفحة.");});
+  setTimeout(function(){if(!window.__jinanModuleReady)status("لم يبدأ محرك الموقع. غالبًا لم تُحمّل مكتبات Firebase؛ افتح الموقع من الاستضافة مع اتصال إنترنت ثم اضغط Ctrl+F5.");},1800);
+})();
+</script>
 
 <script>
 /* JINAN runtime guard: keep a visible, non-blocking error message instead of a dead interface. */
